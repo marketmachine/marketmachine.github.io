@@ -1,11 +1,52 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
 </head>
-<body style="background-color: #000">
-    <a class="twitter-timeline" data-theme="dark" href="https://twitter.com/DeItaone?ref_src=twsrc%5Etfw">Tweets by DeItaone</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<body>
+    
+    <div id='content'>
+        <table id='books' cellpadding='10px' style="text-align:left;">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                </tr>                
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        let xmlContent = '';
+        let tableBooks = document.getElementById('books');
+        fetch('https://rss.app/feeds/bQXphbuGlBnLZd6L.xml').then((response)=> {
+            response.text().then((xml)=>{
+                xmlContent = xml;
+
+                let parser = new DOMParser();
+                let xmlDOM = parser.parseFromString(xmlContent, 'application/xml');
+                let books = xmlDOM.querySelectorAll('item');
+
+                books.forEach(bookXmlNode => {
+
+                    let row = document.createElement('tr');
+
+                    //  title
+                    td = document.createElement('td');
+                    td.innerText = bookXmlNode.children[0].innerHTML;
+                    row.appendChild(td);
+
+                    tableBooks.children[1].appendChild(row);
+                    
+                });
+                
+            });
+        });    
+    </script>
 </body>
 </html>
