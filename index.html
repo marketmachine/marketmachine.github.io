@@ -4,78 +4,165 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <meta http-equiv="refresh" content="30">
+    <!-- <meta http-equiv="refresh" content="60"> -->
     <title>Market News</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <style>
+        body {
+            background-color:#000;
+            padding:20px;
+            color:rgb(207, 207, 207); 
+            font-size:24px;
+            font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+            line-height: 150%;
+        }
+        p {
+            margin: 0px 0 10px 0; 
+        }
+        h3 {margin:0; text-align: center;}
+        .item {
+            padding:20px;
+            padding-bottom: 30px;
+            margin:0.5%;
+            border-radius: 10px;
+            /* background-color: #111; */
+            border: 1px solid #444;
+            width: 45%;
+            position: relative;
+        }
 
-</head>
-<body style="background-color:#000; padding:20px; color:#999999">
+        .ago {
+            font-size:18px; 
+            color:rgb(57, 183, 206);
+            display: block;
+            position: absolute;
+            bottom: 7px;
+            right: 20px;
+            }
+
+        .colinner {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .col {
+            width:50%;
+        }
+
+        #col1 .item {background-color: rgb(15, 21, 24);border-color: rgb(41, 65, 85);}
+        #col2 .item {background-color: rgb(29, 23, 17);border-color: rgb(90, 57, 44);}
+        #col2 .item .ago {color: rgb(185, 100, 67);}
+        .container {
+            display: flex;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.3/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xmltojson@1.3.5/lib/xmlToJSON.min.js"></script>
+
     
-    <div class="row">
-        <div class="col"><div id="col1"></div></div>
-        <div class="col"><div id="col2"></div></div>
-      </div>
+</head>
+<body>
+    <div class="container">
+        <div class="col">
+            <h3>FinancialJuice</h3>
+            <br>
+            <div id="col1" class="colinner">
+            </div>
+        </div>
+        <div class="col">
+            <h3>Cointelegraph</h3>
+            <br>
+            <div id="col2" class="colinner">
+            </div>
+        </div>
+    </div>
 
     <script>
-        let xmlContent = '';
-        let tableBooks = document.getElementById('col1');
-        // Financial Juice Feed
-        fetch('https://rss.app/feeds/bQXphbuGlBnLZd6L.xml').then((response)=> {
-            response.text().then((xml)=>{
-                xmlContent = xml;
+        function fn60sec() {
+            xmlContent = '';
+            tableBooks = document.getElementById('col1');
+            
+            // Financial Juice Feed
+            fetch('https://www.financialjuice.com/feed.ashx?xy=rss').then((response)=> {
+                response.text().then((xml)=>{
+                    xmlContent = xml;
 
-                let parser = new DOMParser();
-                let xmlDOM = parser.parseFromString(xmlContent, 'application/xml');
-                let books = xmlDOM.querySelectorAll('item');
+                    let parser = new DOMParser();
+                    let xmlDOM = parser.parseFromString(xmlContent, 'application/xml');
+                    let books = xmlDOM.querySelectorAll('item');
+                    tableBooks.innerHTML = '';
+                    books.forEach(bookXmlNode => {
 
-                books.forEach(bookXmlNode => {
+                        let row = document.createElement('div');
+                        row.className = "item";
+                        ppp = document.createElement("p");
+                        arr = bookXmlNode.children[0].childNodes[0].data.split(':')
+                        arr.shift()
+                        ppp.innerHTML = arr;
+                        row.appendChild(ppp);
 
-                    let row = document.createElement('div');
+                        dateText = document.createElement('span');
+                        dateText.className = "ago";
 
-                    //  title
-                    // td = document.createElement('td');
-                    ppp = document.createElement("p");
-                    ppp.innerHTML = bookXmlNode.children[0].childNodes[0].data;
-                    row.appendChild(ppp);
-                    // row.appendChild(td);
+                        
+                        const datestr = bookXmlNode.children[4].childNodes[0].data;
+                        const date = new Date(datestr).toLocaleString();
+                        const ago = moment(date).fromNow();
+                        dateText.innerHTML = ago;
+                        row.appendChild(dateText);
 
-                    tableBooks.appendChild(row);
+                        
+                        tableBooks.appendChild(row);
+                        
+                    });
                     
                 });
-                
-            });
-        });    
+            });    
 
-        // Walter Feed
-        let xmlContent2 = '';
-        let tableBooks2 = document.getElementById('col2');
-        fetch('https://rss.app/feeds/AySisAVgD6gX7Xop.xml').then((response)=> {
-            response.text().then((xml)=>{
-                xmlContent2 = xml;
+            
+            xmlContent2 = '';
+            tableBooks2 = document.getElementById('col2');
 
-                let parser = new DOMParser();
-                let xmlDOM = parser.parseFromString(xmlContent2, 'application/xml');
-                let books = xmlDOM.querySelectorAll('item');
+                        // Financial Juice Feed
+                fetch('https://rss.app/feeds/SNUhHcb4grP5e48J.xml').then((response)=> {
+                response.text().then((xml)=>{
+                    xmlContent2 = xml;
+                    // result = xmlToJSON.parseString(xml);
+                    // console.log(result['rss'][0]['channel'][0])
+                    // console.log('test')
+                    let parser = new DOMParser();
+                    let xmlDOM = parser.parseFromString(xmlContent2, 'application/xml');
+                    let books = xmlDOM.querySelectorAll('item');
+                    tableBooks2.innerHTML = '';
+                    books.forEach(bookXmlNode => {
 
-                books.forEach(bookXmlNode => {
+                        let row = document.createElement('div');
+                        row.className = "item";
+                        ppp = document.createElement("p");
+                        ppp.innerHTML = bookXmlNode.children[0].childNodes[0].data;
+                        row.appendChild(ppp);
 
-                    let row = document.createElement('div');
+                        dateText = document.createElement('span');
+                        dateText.className = "ago";
 
-                    //  title
-                    // td = document.createElement('td');
-                    ppp = document.createElement("p");
-                    ppp.innerHTML = bookXmlNode.children[0].childNodes[0].data;
-                    row.appendChild(ppp);
-                    // row.appendChild(td);
+                        
+                        const datestr = bookXmlNode.children[5].childNodes[0].data;
+                        const date = new Date(datestr).toLocaleString();
+                        const ago = moment(date).fromNow();
+                        dateText.innerHTML = ago;
+                        row.appendChild(dateText);
 
-                    tableBooks2.appendChild(row);
+                        
+                        tableBooks2.appendChild(row);
+                        
+                    });
                     
                 });
-                
-            });
-        });    
+            });    
+
+        }
+        fn60sec();
+        setInterval(fn60sec, 15*1000);
     </script>
-
 
 
 </body>
